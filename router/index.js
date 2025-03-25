@@ -26,7 +26,7 @@ router.get("/alumnos", (req,res) => {
 //obtener alumnos por id
 router.get("/alumnos/:id", (req,res)=> {
     const id = req.params.id;
-    conexion.query("SELECT * FROM alumnos WHERE id = ?", [id], (err,resultado) => {
+    conexion.query("SELECT * FROM alumnos WHERE idUser = ?", [id], (err,resultado) => {
         if (err){
             res.status(500).json({ error: "Error en la base de datos"});
         } else if (resultado.length === 0) {
@@ -39,13 +39,13 @@ router.get("/alumnos/:id", (req,res)=> {
 
 //agregar un nuevo alumno
 router.post("/alumnos", (req, res) => {
-    const { nombre, domicilio, edad, sexo } = req.body;
-    const sql = "INSERT INTO alumnos (nombre, domicilio, edad, sexo) VALUES (?, ?, ?, ?)";
-    conexion.query(sql, [nombre, domicilio, edad, sexo], (err, resultado) => {
+    const { name, domicilio, edad, sexo } = req.body;
+    const sql = "INSERT INTO alumnos (name, domicilio, edad, sexo) VALUES (?, ?, ?, ?)";
+    conexion.query(sql, [name, domicilio, edad, sexo], (err, resultado) => {
       if (err) {
         res.status(500).json({ error: "Error al insertar en la base de datos" });
       } else {
-        res.status(201).json({ id: resultado.insertId, nombre, domicilio, edad, sexo });
+        res.status(201).json({ id: resultado.insertId, name, domicilio, edad, sexo });
       }
     });
   });
@@ -54,7 +54,7 @@ router.post("/alumnos", (req, res) => {
 // Eliminar un alumno
 router.delete("/alumnos/:id", (req, res) => {
     const id = req.params.id;
-    conexion.query("DELETE FROM alumnos WHERE id = ?", [id], (err, resultado) => {
+    conexion.query("DELETE FROM alumnos WHERE idUser = ?", [id], (err, resultado) => {
       if (err) {
         res.status(500).json({ error: "Error en la base de datos" });
       } else if (resultado.affectedRows === 0) {
@@ -65,13 +65,39 @@ router.delete("/alumnos/:id", (req, res) => {
     });
   }); 
 
-router.get('/1', (req,res)=> {
-    res.send("Las sumas " + sumar(10,3))
-})
 
-router.get('/2',(req,res)=> {
-    res.send('El alumno es ' + data.nombre)
-})
+// Actualizar un alumno
+router.patch("/alumnos/:id", (req, res) => {
+  const id = req.params.id;
+  const updates = req.body;
+
+  // Generar la consulta SQL dinámicamente
+  const fields = Object.keys(updates).map(field => `${field} = ?`).join(", ");
+  const values = Object.values(updates);
+
+  if (fields.length === 0) {
+      return res.status(400).json({ error: "No se proporcionaron campos para actualizar" });
+  }
+
+  const sql = `UPDATE alumnos SET ${fields} WHERE idUser = ?`;
+  conexion.query(sql, [...values, id], (err, resultado) => {
+      if (err) {
+          res.status(500).json({ error: "Error en la base de datos" });
+      } else if (resultado.affectedRows === 0) {
+          res.status(404).json({ error: "Alumno no encontrado" });
+      } else {
+          res.json({ mensaje: "Alumno actualizado correctamente" });
+      }
+  });
+});  
+
+// router.get('/1', (req,res)=> {
+//     res.send("Las sumas " + sumar(10,3))
+// })
+
+// router.get('/2',(req,res)=> {
+//     res.send('El alumno es ' + data.name)
+// })
 
 export default router;
 

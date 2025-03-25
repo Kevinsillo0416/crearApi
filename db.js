@@ -3,9 +3,9 @@ import mysql from "mysql2"
 // configurar la conexion 
 
 const conexion = mysql.createConnection({
-    host : "localhost",
+    host : "13.216.6.217",
     user : "root",
-    password : "kevin040416",
+    password : "1234",
     database : "api"
 });
 
