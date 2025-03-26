@@ -13,18 +13,18 @@ export let alumnos = [{
     name: "Kevin Osuna", 
     domicilio: "Juarez", 
     edad: "20", 
-    sexo: "masculino" 
+    sexo: "M" 
 },
 { 
     name: "Rolando", 
     domicilio: "Urias", 
     edad: "20", 
-    sexo: "masculino" 
+    sexo: "M" 
 },
 { 
     name: "Jose", 
     domicilio: "Jabalies", 
     edad: "20", 
-    sexo: "masculino" 
+    sexo: "M" 
 }
 ];
