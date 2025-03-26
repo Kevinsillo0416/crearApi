@@ -21,9 +21,9 @@ router.get("/alumnos", (req,res) => {
 
 
 //obtener alumnos por nombre
-router.get("/alumnos/:nombre", (req, res) => {
-  const nombre = req.params.nombre;
-  const alumno = alumnos.find(a => a.name.toLowerCase() === nombre.toLowerCase());
+router.get("/alumnos/:name", (req, res) => {
+  const name = req.params.name;
+  const alumno = alumnos.find(a => a.name.toLowerCase() === name.toLowerCase());
   if (!alumno) return res.status(404).json({ error: "Alumno no encontrado" });
   res.json(alumno);
 });
@@ -97,5 +97,5 @@ router.patch("/alumnos/:id", (req, res) => {
 // })
 
 export default router;
-
+  
 
