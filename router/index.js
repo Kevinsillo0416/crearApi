@@ -1,10 +1,12 @@
 import express, {Router} from "express";
-import conexion from "../db.js"; //Conexion MySQL
+// import conexion from "../db.js"; //Conexion MySQL
 import json from "body-parser/lib/types/json.js";
-import { sumar,restar,multiplicar,data } from "../module/librerias.js"
+import { alumnos ,sumar,restar,multiplicar } from "../module/librerias.js"
 
 export const router = express.Router();
 
+
+// Ruta de prueba
 router.get('/',(req,res)=> {
 
     res.send("Se cargo la pagina");
@@ -13,30 +15,25 @@ router.get('/',(req,res)=> {
 
 //obtener todos los alumnos
 router.get("/alumnos", (req,res) => {
-    conexion.query("SELECT * FROM alumnos", (err,resultados)=> {
-        if (err) {
-            res.status(500).json({ error: "Error en la base de datos"});
-        } else {
-            res.json(resultados);
-        }
+  res.json(alumnos);
     });
+
+
+
+//obtener alumnos por nombre
+router.get("/alumnos/:nombre", (req, res) => {
+  const nombre = req.params.nombre;
+  const alumno = alumnos.find(a => a.name.toLowerCase() === nombre.toLowerCase());
+  if (!alumno) return res.status(404).json({ error: "Alumno no encontrado" });
+  res.json(alumno);
 });
 
 
-//obtener alumnos por id
-router.get("/alumnos/:id", (req,res)=> {
-    const id = req.params.id;
-    conexion.query("SELECT * FROM alumnos WHERE idUser = ?", [id], (err,resultado) => {
-        if (err){
-            res.status(500).json({ error: "Error en la base de datos"});
-        } else if (resultado.length === 0) {
-            res.status(404).json({ error: "Alumno no encontrado"});
-        } else {
-            res.json(resultado[0]);
-        }
-    });
-});
 
+
+
+// ----------------------------------------------------------------------------------------------------------
+// peticiones mysql
 //agregar un nuevo alumno
 router.post("/alumnos", (req, res) => {
     const { name, domicilio, edad, sexo } = req.body;
